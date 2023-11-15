@@ -1,0 +1,29 @@
+---
+title: "Homework 5"
+author: "Joshua Carpenter"
+date: "2023-11-15"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+```{r}
+homocide_data_url <- "https://raw.githubusercontent.com/washingtonpost/data-homicides/master/homicide-data.csv"
+homocide_df <- read_csv(url(homocide_data_url))
+homocide_unsolved_df <- homocide_df |> 
+  mutate(
+    disposition = case_match(
+      disposition,
+      "Closed by arrest" ~ "solved",
+      c("Closed without arrest", "Open/No arrest") ~ "unsolved"
+    ), 
+    city_state = paste(city, state, sep = ", ")
+  ) |> 
+  group_by(city_state, disposition) |> 
+  count() |> 
+  pivot_wider(names_from = disposition, values_from = n) |> 
+  mutate(total = solved + unsolved)
+```
+
