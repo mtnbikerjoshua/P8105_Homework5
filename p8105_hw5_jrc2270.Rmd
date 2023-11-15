@@ -24,6 +24,12 @@ homocide_unsolved_df <- homocide_df |>
   group_by(city_state, disposition) |> 
   count() |> 
   pivot_wider(names_from = disposition, values_from = n) |> 
-  mutate(total = solved + unsolved)
+  mutate(total = solved + unsolved) |> 
+  select(-solved)
+
+homocide_unsolved_df |> 
+  filter(city_state == "Baltimore, MD") |> 
+  select(-city_state) |> 
+  prop.test(.$unsolved, .$total)
 ```
 
