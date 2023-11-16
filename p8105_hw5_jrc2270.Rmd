@@ -27,9 +27,10 @@ homocide_unsolved_df <- homocide_df |>
   mutate(total = solved + unsolved) |> 
   select(-solved)
 
-homocide_unsolved_df |> 
-  filter(city_state == "Baltimore, MD") |> 
-  select(-city_state) |> 
-  prop.test(.$unsolved, .$total)
+balt_prop_unslv_homocides <- homocide_unsolved_df |> 
+  filter(city_state == "Baltimore, MD") %>% 
+  {prop.test(x = .$unsolved, n = .$total)} %>%
+  broom::tidy() %>%
+  select(estimate, conf.low, conf.high)
 ```
 
